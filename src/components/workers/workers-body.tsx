@@ -16,7 +16,7 @@ const WorkersBody: React.FC<IWorkersBodyProps> = ({ id, name, surname, pay, chec
       <input
         type="checkbox"
         id={ id.toString() }
-        checked={ checked }
+        defaultChecked={ checked }
         onClick={ onIsChecked(id) }
       />
     </td>

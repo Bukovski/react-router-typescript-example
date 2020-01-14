@@ -15,105 +15,99 @@ interface IInputs {
 }
 
 
-class TableBodyList extends React.Component<ITableBodyListProps, object> {
-  private _inputs : IInputs;
-  private _inputCallbackRef : (field: string) => (input: HTMLInputElement) => void;
+function TableBodyList(props: ITableBodyListProps) {
+  const { id, name, surname, days, pay, onChangeId, editId, onChangeItem } = props;
 
-  constructor(props: ITableBodyListProps) {
-    super(props);
+  const _inputs: IInputs = {};
 
-    this._inputs = {};
-
-    this._inputCallbackRef = (field) => (input) => {
-      this._inputs[ field ] = input
+  const _inputCallbackRef = (input: HTMLInputElement): void => {
+    if (input && input.name) {
+      _inputs[ input.name ] = input;
     }
-  }
+  };
 
-  
-  sendInputData(): ITableEmployers {
-    const inputData: {} | ITableEmployers = Object.entries(this._inputs).reduce((before, [ key, value ]) => {
+
+  const sendInputData = (): ITableEmployers => {
+    const inputData: {} | ITableEmployers = Object.entries(_inputs).reduce((before, [ key, value ]) => {
       return { ...before, [ key ]: value.value }
     }, {});
 
     return inputData as ITableEmployers
-  }
-  
-  handleFocusField = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  };
+
+  const handleFocusField = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       const { name } = event.target as HTMLInputElement;
-      
-      const nextInputKey = nextKey(this._inputs, name);
-      
-      if (nextInputKey) {
-        this._inputs[ nextInputKey ].focus();
-      } else {
-        const firstIndexKey = firstKey(this._inputs);
 
-        this._inputs[ firstIndexKey ].focus();
+      const nextInputKey = nextKey(_inputs, name);
+
+      if (nextInputKey) {
+        _inputs[ nextInputKey ].focus();
+      } else {
+        const firstIndexKey = firstKey(_inputs);
+
+        _inputs[ firstIndexKey ].focus();
       }
     }
-    
-    this.props.onChangeItem(this.sendInputData());
+
+    onChangeItem(sendInputData());
   };
-  
-  render() {
-    const { id, name, surname, days, pay, onChangeId, editId } = this.props;
-    
-    const salary = (days * pay).toFixed(2);
-    
-    const editForm = (editId !== id)
-      ? <React.Fragment>
-        <td>{ id }</td>
-        <td>{ name }</td>
-        <td>{ surname }</td>
-        <td>{ days }</td>
-        <td>{ pay }</td>
-        <td>{ salary }</td>
-      </React.Fragment>
-      
-      : <React.Fragment>
-        <td>{ id }</td>
-        <td>
-          <InputRef
-            name={ 'name' }
-            value={ name }
-            onFocusField={ this.handleFocusField }
-            inputRef={ this._inputCallbackRef("name") }
-          />
-        </td>
-        <td>
-          <InputRef
-            name={ "surname" }
-            value={ surname }
-            onFocusField={ this.handleFocusField }
-            inputRef={ this._inputCallbackRef("surname") }
-          />
-        </td>
-        <td>
-          <InputRef
-            name={ "days" }
-            value={ days }
-            onFocusField={ this.handleFocusField }
-            inputRef={ this._inputCallbackRef("days") }
-          />
-        </td>
-        <td>
-          <InputRef
-            name={ "pay" }
-            value={ pay }
-            onFocusField={ this.handleFocusField }
-            inputRef={ this._inputCallbackRef("pay") }
-          />
-        </td>
-        <td>{ salary }</td>
-      </React.Fragment>;
-    
-    return (
-      <tr onDoubleClick={ onChangeId(id) }>
-        { editForm }
-      </tr>
-    )
-  }
+
+
+  const salary = (days * pay).toFixed(2);
+
+  const editForm = (editId !== id)
+    ? <React.Fragment>
+      <td>{ id }</td>
+      <td>{ name }</td>
+      <td>{ surname }</td>
+      <td>{ days }</td>
+      <td>{ pay }</td>
+      <td>{ salary }</td>
+    </React.Fragment>
+
+    : <React.Fragment>
+      <td>{ id }</td>
+      <td>
+        <InputRef
+          name={ 'name' }
+          value={ name }
+          onFocusField={ handleFocusField }
+          inputRef={ _inputCallbackRef }
+        />
+      </td>
+      <td>
+        <InputRef
+          name={ "surname" }
+          value={ surname }
+          onFocusField={ handleFocusField }
+          inputRef={ _inputCallbackRef }
+        />
+      </td>
+      <td>
+        <InputRef
+          name={ "days" }
+          value={ days }
+          onFocusField={ handleFocusField }
+          inputRef={ _inputCallbackRef }
+        />
+      </td>
+      <td>
+        <InputRef
+          name={ "pay" }
+          value={ pay }
+          onFocusField={ handleFocusField }
+          inputRef={ _inputCallbackRef }
+        />
+      </td>
+      <td>{ salary }</td>
+    </React.Fragment>;
+
+  return (
+    <tr onDoubleClick={ onChangeId(id) }>
+      { editForm }
+    </tr>
+  )
 }
 
 

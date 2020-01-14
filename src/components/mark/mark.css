@@ -1,0 +1,13 @@
+.circle {
+  display: inline-block;
+  float: left;
+  margin: 5px;
+  padding: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mark {
+  padding: 0 10px !important;
+  font-size: 30px
+}

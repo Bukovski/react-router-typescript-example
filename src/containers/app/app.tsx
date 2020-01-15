@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Tooltip from '../tooltip';
 import TableEdit from '../table-edit';
 import { TABLE_FIELDS, TABLE_EMPLOYERS } from '../../config';
@@ -10,6 +10,23 @@ import ColorForm from "../color-form";
 export default function App(props: object) {
   return(
     <React.Fragment>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item active">
+            <a className="nav-link" href="#">Color Form</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">Tooltip</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">Edit Table</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="#">Workers Table</a>
+          </li>
+        </ul>
+      </nav>
+
       <ColorForm />
 
       <hr/>

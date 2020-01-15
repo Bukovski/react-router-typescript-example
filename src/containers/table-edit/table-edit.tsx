@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableBodyList } from "../../components/table";
 import { ITableEmployers } from "../../config";
 
@@ -16,86 +16,85 @@ interface ITableEditState {
 }
 
 
-class TableEdit extends React.Component<ITableEditProps, ITableEditState> {
-  constructor(props: ITableEditProps) {
-    super(props);
-    
-    this.state = {
-      employers: props.employers,
-      employersHeader: props.fields,
-      editId: null,
-      editItems: null
-    }
-  }
+function TableEdit(props: ITableEditProps) {
+  const [ employer, setEmployer ] = useState<ITableEditState>({
+    employers: props.employers,
+    employersHeader: props.fields,
+    editId: null,
+    editItems: null
+  });
+  const { employers, employersHeader, editId, editItems } = employer;
 
-  salaryAllEmployers(): number {
-    return this.state.employers.reduce((before, elem) => {
+
+  const salaryAllEmployers = (): number => {
+    return employer.employers.reduce((before, elem) => {
       return before += elem.days * elem.pay;
     }, 0);
-  }
-  
-  handleChangeId = (id: number) => (event: React.MouseEvent): void => {
-    this.setState({
+  };
+
+  const handleChangeId = (id: number) => (event: React.MouseEvent): void => {
+    setEmployer({
+      employers,
+      employersHeader,
       editId: id,
       editItems: null
     });
   };
-  
-  handleChangeItem = (obj: ITableEmployers): void => {
-    this.setState({
+
+  const handleChangeItem = (obj: ITableEmployers): void => {
+    setEmployer({
+      employers,
+      employersHeader,
+      editId,
       editItems: obj
     });
   };
-  
-  handleClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
-    this.setState(({ employers, editId, editItems }) => {
-      const newEmployers = employers.map(elem => {
-        if (editItems && elem.id === editId) {
-          return { id: elem.id, ...editItems }
-        }
 
-        return elem;
-      });
-
-      return {
-        employers: newEmployers,
-        editId: null,
-        editItems: null
+  const handleClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
+    const newEmployers = employers.map(elem => {
+      if (editItems && elem.id === editId) {
+        return { id: elem.id, ...editItems }
       }
-    })
-  };
-  
-  render() {
-    const { employers, employersHeader, editId } = this.state;
-    
-    const allEmployers = employers.map((elem) => {
-      return <TableBodyList
-        key={ elem.id }
-        { ...elem }
-        editId={ editId }
-        onChangeId={ this.handleChangeId }
-        onChangeItem={ this.handleChangeItem }
-      />
+
+      return elem;
     });
-    
-    return (
-      <div className="maxSpace" onDoubleClickCapture={ this.handleClickOutside }>
-        <div className="container">
-          <Table>
-            <TableHeader headers={ employersHeader }/>
-            <TableBody>
-              { allEmployers }
-              <tr>
-                <td colSpan={ 6 }>
-                  Зарплата всех работников: <strong>{ this.salaryAllEmployers() }</strong>
-                </td>
-              </tr>
-            </TableBody>
-          </Table>
-        </div>
+
+    setEmployer({
+      employersHeader,
+      employers: newEmployers,
+      editId: null,
+      editItems: null
+    });
+  };
+
+
+  const allEmployers = employers.map((elem) => {
+    return <TableBodyList
+      key={ elem.id }
+      { ...elem }
+      editId={ editId }
+      onChangeId={ handleChangeId }
+      onChangeItem={ handleChangeItem }
+    />
+  });
+
+  return (
+    <div className="maxSpace" onDoubleClickCapture={ handleClickOutside }>
+      <div className="container">
+        <Table>
+          <TableHeader headers={ employersHeader }/>
+          <TableBody>
+            { allEmployers }
+            <tr>
+              <td colSpan={ 6 }>
+                Зарплата всех работников: <strong>{ salaryAllEmployers() }</strong>
+              </td>
+            </tr>
+          </TableBody>
+        </Table>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 
